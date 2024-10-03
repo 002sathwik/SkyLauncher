@@ -1,6 +1,3 @@
-
-
-
 import fs from 'fs';
 import path from 'path';
 
@@ -17,7 +14,7 @@ export const getAllFiles = (folderPath: string): string[] => {
                 if (stats.isDirectory()) {
                     response = response.concat(getAllFiles(fullFilePath)); 
                 } else {
-                    // Normalize the file path to use forward slashes
+                   
                     response.push(fullFilePath.split(path.sep).join(path.posix.sep));
                 }
             } catch (err) {

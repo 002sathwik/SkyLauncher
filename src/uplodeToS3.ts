@@ -21,5 +21,5 @@ export const UploadFileToS3 = async (fileName: string, localFilePath: string) =>
         Key: fileName
     }).promise();
 
-    console.log(response);
+    
 };

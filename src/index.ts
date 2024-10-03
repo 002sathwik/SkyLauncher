@@ -6,6 +6,7 @@ import simpleGit from 'simple-git';
 import { generate } from './utils';
 import { getAllFiles } from './files';
 import { UploadFileToS3 } from './uplodeToS3';
+import { sendMessageToSQS } from './awsSQSuplode';
 
 const app = express();
 app.use(cors());
@@ -23,6 +24,9 @@ app.post("/deploy", async (req: any, res: any) => {
         await UploadFileToS3(file.slice(__dirname.length + 1), file);
 
     });
+    await sendMessageToSQS(id);
+ 
+    console.log("done");
     res.json({
         id: id
     })
