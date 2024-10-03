@@ -16,7 +16,7 @@ yarn-error.log*
 # Dist and build folders
 dist/
 build/
-
+output/
 # Temporary files
 *.tmp
 *.temp
