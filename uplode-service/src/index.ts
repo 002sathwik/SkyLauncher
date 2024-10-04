@@ -8,7 +8,8 @@ import { getAllFiles } from './files';
 import { UploadFileToS3 } from './uplodeToS3';
 import { sendMessageToSQS } from './awsSQSuplode';
 import { createClient } from "redis";
-
+import dotenv from 'dotenv';
+dotenv.config();
 
 const publisher = createClient();
 publisher.connect();
@@ -29,12 +30,7 @@ app.post("/deploy", async (req: any, res: any) => {
 
     const files = getAllFiles(path.join(__dirname, `output/${id}`).split(path.sep).join(path.posix.sep));
     console.log(files);
-    // files.forEach(async (file) => {
-    //     await UploadFileToS3(file.slice(__dirname.length + 1), file);
-
-    // });
-
-    // await sendMessageToSQS(id);
+  
 
     const uploadPromises = files.map(async (file) => {
         await UploadFileToS3(file.slice(__dirname.length + 1), file);
@@ -59,6 +55,22 @@ app.get("/status", async (req, res) => {
         status: response
     })
 })
+
+app.post("/security", async (req, res) => {
+    const key = req.body.key;
+    const pass = process.env.SECURITY_KEY;
+    console.log(key)
+    console.log(pass)
+    if (key === pass) {
+      res.json({
+        status: "success",
+      });
+    } else {
+      res.json({
+        status: "fails",
+      });
+    }
+  });
 
 app.listen(3000, () => {
     console.log('Server is running on port 3000');
