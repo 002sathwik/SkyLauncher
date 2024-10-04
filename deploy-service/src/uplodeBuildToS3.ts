@@ -12,13 +12,26 @@ const s3 = new S3({
 });
 
 export function uplodeBuildToS3(id: string) {
-    const folderPath = path.join(__dirname, `output/${id}/build`);
+    const buildFolderPath = path.join(__dirname, `output/${id}/build`);
+    const distFolderPath = path.join(__dirname, `output/${id}/dist`);
+    
+    let folderPath: string;
+    if (fs.existsSync(buildFolderPath)) {
+        folderPath = buildFolderPath;
+    } else if (fs.existsSync(distFolderPath)) {
+        folderPath = distFolderPath;
+    } else {
+        console.error(`Neither build nor dist folder exists for id: ${id}`);
+        return;
+    }
+
     const allFiles = getAllFiles(folderPath);
     allFiles.forEach(file => {
         const s3Key = `dist/${id}/` + file.slice(folderPath.length + 1).replace(/\\/g, '/');
         uploadFile(s3Key, file);
     });
 }
+
 
 const getAllFiles = (folderPath: string): string[] => {
     let response: string[] = [];
