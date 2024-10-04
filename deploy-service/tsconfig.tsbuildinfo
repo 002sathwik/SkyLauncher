@@ -1,1 +1,1 @@
-{"root":["./src/build.ts","./src/downlodefroms3.ts","./src/index.ts","./src/recivemsgfromsqs.ts"],"version":"5.6.2"}
+{"root":["./src/build.ts","./src/downlodefroms3.ts","./src/index.ts","./src/recivemsgfromsqs.ts","./src/uplodebuildtos3.ts"],"version":"5.6.2"}
