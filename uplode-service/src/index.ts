@@ -29,14 +29,23 @@ app.post("/deploy", async (req: any, res: any) => {
 
     const files = getAllFiles(path.join(__dirname, `output/${id}`).split(path.sep).join(path.posix.sep));
     console.log(files);
-    files.forEach(async (file) => {
-        await UploadFileToS3(file.slice(__dirname.length + 1), file);
+    // files.forEach(async (file) => {
+    //     await UploadFileToS3(file.slice(__dirname.length + 1), file);
 
+    // });
+
+    // await sendMessageToSQS(id);
+
+    const uploadPromises = files.map(async (file) => {
+        await UploadFileToS3(file.slice(__dirname.length + 1), file);
     });
+
+    await Promise.all(uploadPromises);
+
     await sendMessageToSQS(id);
 
     publisher.hSet("status", id, "uploded");
- 
+
     console.log("done");
     res.json({
         id: id
