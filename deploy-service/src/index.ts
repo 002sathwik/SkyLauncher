@@ -1,3 +1,4 @@
+import { buildProject } from "./build";
 import { downloadS3Folder, } from "./downlodeFromS3";
 import { receiveMessageFromSQS } from "./reciveMsgFromSQS";
 
@@ -11,6 +12,7 @@ async function main() {
             console.log(`output/${id}`)
             await downloadS3Folder(`output/${id}`);
             console.log(`Downloaded ${message.Body}`);
+            await buildProject(id);
         }
     }
 }
