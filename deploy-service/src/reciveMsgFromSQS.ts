@@ -57,3 +57,26 @@ const deleteMessageFromSQS = async (receiptHandle: string): Promise<void> => {
         console.error('Error deleting message from SQS:', error);
     }
 };
+
+
+export const sendMessageToSQSStatus = async (messageBody: string): Promise<void> => {
+    const queueUrl = "https://sqs.ap-south-1.amazonaws.com/992382610963/statusSQS"
+
+
+    if (!queueUrl) {
+        console.error('Queue URL is not defined in environment variables');
+        return;
+    }
+
+    const params = {
+        MessageBody: messageBody,
+        QueueUrl: queueUrl
+    };
+
+    try {
+        const result = await sqs.sendMessage(params).promise();
+        console.log(`Message sent to SQS with ID: ${result.MessageId}`);
+    } catch (error) {
+        console.error('Error sending message to SQS:', error);
+    }
+};

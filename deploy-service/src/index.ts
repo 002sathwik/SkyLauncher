@@ -1,14 +1,26 @@
 import { buildProject } from "./build";
 import { downloadS3Folder, } from "./downlodeFromS3";
-import { receiveMessageFromSQS } from "./reciveMsgFromSQS";
+import { receiveMessageFromSQS, sendMessageToSQSStatus} from "./reciveMsgFromSQS";
 import { uplodeBuildToS3 } from "./uplodeBuildToS3";
-import { createClient } from 'redis'
+// import { createClient } from 'redis'
 
-const subscriber = createClient();
-subscriber.connect();
+// const redisUrl = process.env.REDIS_URL_INSTANCE;
 
-const publisher = createClient();
-publisher.connect();
+// if (!redisUrl) {
+//   console.error('REDIS_URL_INSTANCE environment variable is not set');
+//   process.exit(1);
+// }
+
+// const publisher = createClient({ url: redisUrl });
+// publisher.connect().then(() => {
+//   console.log('Publisher connected to Redis');
+// }).catch(err => console.error('Failed to connect publisher to Redis', err));
+
+// const subscriber = createClient({ url: redisUrl });
+// subscriber.connect().then(() => {
+//   console.log('Subscriber connected to Redis');
+// }).catch(err => console.error('Failed to connect subscriber to Redis', err));
+// publisher.connect();
 
 async function main() {
     while (true) {
@@ -21,7 +33,9 @@ async function main() {
             console.log(`Downloaded ${message.Body}`);
             await buildProject(id);
             await uplodeBuildToS3(id);
-            publisher.hSet("status", id , "deployed");
+            await  sendMessageToSQSStatus(id)
+            console.log("deplpoyed")
+
         }
     }
 }
